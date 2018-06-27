@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Attendance\Repository;
 
 use Doctrine\ORM\QueryBuilder;
@@ -7,7 +9,7 @@ use KejawenLab\Application\SemartHris\Component\Attendance\Model\AttendanceInter
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface AttendanceRepositoryInterface
 {
@@ -43,6 +45,14 @@ interface AttendanceRepositoryInterface
      * @param AttendanceInterface $attendance
      */
     public function update(AttendanceInterface $attendance): void;
+
+    /**
+     * @param EmployeeInterface  $employee
+     * @param \DateTimeInterface $date
+     *
+     * @return AttendanceInterface
+     */
+    public function createNew(EmployeeInterface $employee, \DateTimeInterface $date): AttendanceInterface;
 
     /**
      * @param EmployeeInterface  $employee

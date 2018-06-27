@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Overtime\Calculator;
 
 use KejawenLab\Application\SemartHris\Component\Overtime\Model\OvertimeInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  *
  * @see https://gajimu.com/main/pekerjaan-yanglayak/kompensasi/upah-lembur
  */

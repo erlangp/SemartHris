@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Twig;
 
 use KejawenLab\Application\SemartHris\Component\Salary\Repository\ComponentRepositoryInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Service\ValidateStateType;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class SalaryComponentExtension extends \Twig_Extension
 {

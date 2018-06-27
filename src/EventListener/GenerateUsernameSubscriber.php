@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\EventListener;
 
 use Doctrine\Common\EventSubscriber;
@@ -11,7 +13,7 @@ use KejawenLab\Application\SemartHris\Component\User\Service\UsernameGenerator;
 use KejawenLab\Application\SemartHris\Security\Service\PasswordSetter;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class GenerateUsernameSubscriber implements EventSubscriber
 {
@@ -79,7 +81,7 @@ class GenerateUsernameSubscriber implements EventSubscriber
             return;
         }
 
-        $role = ['ROLE_EMPLOYEE'];
+        $role = [UserInterface::DEFAULT_ROLE];
         if (0 === $this->userRepository->count()) {
             $role = ['ROLE_SUPER_ADMIN'];
         }

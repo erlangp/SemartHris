@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Salary\Repository;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Model\PayrollPeriodInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface PayrollPeriodRepositoryInterface
 {
@@ -37,7 +39,14 @@ interface PayrollPeriodRepositoryInterface
     public function update(PayrollPeriodInterface $payrollPeriod): void;
 
     /**
+     * @param \DateTimeInterface $date
+     *
      * @return bool
      */
-    public function isEmpty(): bool;
+    public function isEmptyOrNotEqueal(\DateTimeInterface $date): bool;
+
+    /**
+     * @return bool
+     */
+    public function hasUnclosedPeriod(): bool;
 }

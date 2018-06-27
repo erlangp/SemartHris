@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\User\Model;
 
 use KejawenLab\Library\PetrukUsername\Repository\UsernameInterface;
 use Symfony\Component\Security\Core\User\UserInterface as SymfonyUser;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface UserInterface extends UsernameInterface, SymfonyUser
 {
+    const DEFAULT_ROLE = 'ROLE_EMPLOYEE';
+
     /**
      * @param string $password
      */

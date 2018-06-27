@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Job\Model;
 
 use KejawenLab\Application\SemartHris\Component\Company\Model\CompanyInterface;
@@ -8,7 +10,7 @@ use KejawenLab\Application\SemartHris\Component\Contract\Model\ContractInterface
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface MutationInterface
 {

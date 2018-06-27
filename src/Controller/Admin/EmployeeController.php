@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Controller\Admin;
 
 use Doctrine\ORM\QueryBuilder;
-use KejawenLab\Application\SemartHris\Component\Contract\ContractType;
+use KejawenLab\Application\SemartHris\Entity\Employee;
 use KejawenLab\Application\SemartHris\Form\Manipulator\EmployeeManipulator;
-use KejawenLab\Application\SemartHris\Repository\ContractRepository;
 use KejawenLab\Application\SemartHris\Repository\EmployeeRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class EmployeeController extends AdminController
 {
@@ -32,22 +33,6 @@ class EmployeeController extends AdminController
     }
 
     /**
-     * @Route("/contract/employee", name="contract_employee", options={"expose"=true})
-     *
-     * @return Response
-     */
-    public function findEmployeeContractAction()
-    {
-        $result = [];
-        $contracts = $this->container->get(ContractRepository::class)->findByType(ContractType::CONTRACT_EMPLOYEE);
-        foreach ($contracts as $contract) {
-            $result[] = $contract;
-        }
-
-        return new JsonResponse(['contracts' => $contracts]);
-    }
-
-    /**
      * @Route("/employee/search", name="employee_search", options={"expose"=true})
      *
      * @param Request $request
@@ -59,6 +44,24 @@ class EmployeeController extends AdminController
         $employees = $this->container->get(EmployeeRepository::class)->search($request);
 
         return new JsonResponse(['employees' => $employees]);
+    }
+
+    /**
+     * @Route("/employee/{id}/for-tax-change", name="employee_get_for_tax_change", options={"expose"=true})
+     *
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function findEmployeeAction(string $id)
+    {
+        /** @var Employee $employee */
+        $employee = $this->container->get(EmployeeRepository::class)->find($id);
+
+        return new JsonResponse(['employee' => [
+            'tax_group' => $employee->getTaxGroupText(),
+            'risk_ratio' => $employee->getRiskRatioText(),
+        ]]);
     }
 
     /**
@@ -99,6 +102,6 @@ class EmployeeController extends AdminController
      */
     protected function createSearchQueryBuilder($entityClass, $searchQuery, array $searchableFields, $sortField = null, $sortDirection = null, $dqlFilter = null)
     {
-        return $this->container->get(EmployeeRepository::class)->createSearchQueryBuilder($searchQuery, $sortField, $sortDirection, $dqlFilter);
+        return $this->container->get(EmployeeRepository::class)->createSearchQueryBuilder($searchQuery, $sortField, (string) $sortDirection, $dqlFilter);
     }
 }

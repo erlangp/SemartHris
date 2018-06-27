@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Repository;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -8,17 +10,17 @@ use Doctrine\ORM\QueryBuilder;
 use KejawenLab\Application\SemartHris\Entity\Skill;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class SkillRepository
 {
     /**
      * @param ManagerRegistry $managerRegistry
-     * @param $searchQuery
-     * @param array $searchableFields
-     * @param null  $sortField
-     * @param null  $sortDirection
-     * @param null  $dqlFilter
+     * @param null|string     $searchQuery
+     * @param array           $searchableFields
+     * @param null|string     $sortField
+     * @param string          $sortDirection
+     * @param null|string     $dqlFilter
      *
      * @return QueryBuilder
      */

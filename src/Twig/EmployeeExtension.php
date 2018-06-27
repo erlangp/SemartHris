@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Twig;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use KejawenLab\Application\SemartHris\Component\Employee\Repository\EmployeeRepositoryInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class EmployeeExtension extends \Twig_Extension
 {
@@ -40,6 +42,6 @@ class EmployeeExtension extends \Twig_Extension
      */
     public function getEmployee(?string $id): ? EmployeeInterface
     {
-        return $this->repository->find((string) $id);
+        return $this->repository->find($id);
     }
 }

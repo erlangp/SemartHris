@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Salary\Processor;
 
 use KejawenLab\Application\SemartHris\Component\Attendance\Repository\AttendanceRepositoryInterface;
@@ -8,12 +10,13 @@ use KejawenLab\Application\SemartHris\Component\Overtime\Repository\OvertimeRepo
 use KejawenLab\Application\SemartHris\Component\Salary\Model\AttendanceSummaryInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Repository\AttendanceSummaryRepositoryInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Service\WorkdayCalculator;
-use KejawenLab\Application\SemartHris\Util\SettingUtil;
+use KejawenLab\Application\SemartHris\Component\Setting\Service\Setting;
+use KejawenLab\Application\SemartHris\Component\Setting\SettingKey;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
-class AttendanceProcessor implements ProcessorInterface
+class AttendanceProcessor implements PayrollProcessorInterface
 {
     const CUT_OFF_LAST_DATE = -1;
 
@@ -38,6 +41,11 @@ class AttendanceProcessor implements ProcessorInterface
     private $attendanceSummaryRepository;
 
     /**
+     * @var Setting
+     */
+    private $setting;
+
+    /**
      * @var int
      */
     private $cutOffDate;
@@ -48,10 +56,13 @@ class AttendanceProcessor implements ProcessorInterface
     private $attendanceSummaryClass;
 
     /**
+     * AttendanceProcessor constructor.
+     *
      * @param WorkdayCalculator                    $workdayCalculator
      * @param AttendanceRepositoryInterface        $attendanceRepository
      * @param OvertimeRepositoryInterface          $overtimeRepository
      * @param AttendanceSummaryRepositoryInterface $attendanceSummaryRepository
+     * @param Setting                              $setting
      * @param int                                  $cutOffDate
      * @param string                               $attendanceSummaryClass
      */
@@ -60,6 +71,7 @@ class AttendanceProcessor implements ProcessorInterface
         AttendanceRepositoryInterface $attendanceRepository,
         OvertimeRepositoryInterface $overtimeRepository,
         AttendanceSummaryRepositoryInterface $attendanceSummaryRepository,
+        Setting $setting,
         int $cutOffDate,
         string $attendanceSummaryClass
     ) {
@@ -67,6 +79,7 @@ class AttendanceProcessor implements ProcessorInterface
         $this->attendanceRepository = $attendanceRepository;
         $this->overtimeRepository = $overtimeRepository;
         $this->attendanceSummaryRepository = $attendanceSummaryRepository;
+        $this->setting = $setting;
         $this->cutOffDate = $cutOffDate;
         $this->attendanceSummaryClass = $attendanceSummaryClass;
     }
@@ -82,16 +95,16 @@ class AttendanceProcessor implements ProcessorInterface
         if (!$summary) {
             $summary = new $this->attendanceSummaryClass();
             $summary->setEmployee($employee);
-            $summary->setYear($date->format('Y'));
-            $summary->setMonth($date->format('n'));
+            $summary->setYear((int) $date->format('Y'));
+            $summary->setMonth((int) $date->format('n'));
         }
 
         if (self::CUT_OFF_LAST_DATE === $this->cutOffDate) {
             $totalWorkday = $this->workdayCalculator->getWorkdays($date);
             $summary->setTotalWorkday($totalWorkday);
 
-            $from = \DateTime::createFromFormat(SettingUtil::get(SettingUtil::DATE_FORMAT), $date->format(SettingUtil::get(SettingUtil::FIRST_DATE_FORMAT)));
-            $to = \DateTime::createFromFormat(SettingUtil::get(SettingUtil::DATE_FORMAT), $date->format(SettingUtil::get(SettingUtil::LAST_DATE_FORMAT)));
+            $from = \DateTime::createFromFormat($this->setting->get(SettingKey::DATE_FORMAT), $date->format($this->setting->get(SettingKey::FIRST_DATE_FORMAT)));
+            $to = \DateTime::createFromFormat($this->setting->get(SettingKey::DATE_FORMAT), $date->format($this->setting->get(SettingKey::LAST_DATE_FORMAT)));
 
             $this->applyAttendanceSummary($summary, $from, $to);
         } else {
@@ -129,6 +142,6 @@ class AttendanceProcessor implements ProcessorInterface
         $summary->setTotalLoyality($totalLoyality ?? 0);
 
         $totalOvertime = $this->overtimeRepository->getSummaryByEmployeeAndDate($summary->getEmployee(), $from, $to);
-        $summary->setTotalOvertime($totalOvertime['totalOvertime'] ?? 0);
+        $summary->setTotalOvertime((int) $totalOvertime['totalOvertime'] ?? 0);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Overtime\Repository;
 
 use Doctrine\ORM\QueryBuilder;
@@ -7,7 +9,7 @@ use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface
 use KejawenLab\Application\SemartHris\Component\Overtime\Model\OvertimeInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface OvertimeRepositoryInterface
 {

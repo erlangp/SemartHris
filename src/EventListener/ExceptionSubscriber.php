@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\EventListener;
 
 use Psr\Log\LoggerInterface;
@@ -10,6 +12,9 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
+ */
 class ExceptionSubscriber implements EventSubscriberInterface
 {
     /**

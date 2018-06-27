@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -17,13 +19,15 @@ use KejawenLab\Application\SemartHris\Component\Company\Model\DepartmentInterfac
 use KejawenLab\Application\SemartHris\Component\Contract\Model\Contractable;
 use KejawenLab\Application\SemartHris\Component\Contract\Model\ContractInterface;
 use KejawenLab\Application\SemartHris\Component\Employee\Model\Superviseable;
+use KejawenLab\Application\SemartHris\Component\Employee\RiskRatio;
 use KejawenLab\Application\SemartHris\Component\Employee\Service\ValidateContractType;
 use KejawenLab\Application\SemartHris\Component\Employee\Service\ValidateGender;
 use KejawenLab\Application\SemartHris\Component\Employee\Service\ValidateIdentityType;
 use KejawenLab\Application\SemartHris\Component\Employee\Service\ValidateMaritalStatus;
+use KejawenLab\Application\SemartHris\Component\Employee\Service\ValidateRiskRatio;
 use KejawenLab\Application\SemartHris\Component\Job\Model\JobLevelInterface;
 use KejawenLab\Application\SemartHris\Component\Job\Model\JobTitleInterface;
-use KejawenLab\Application\SemartHris\Component\Tax\Service\ValidateIndonesiaTaxType;
+use KejawenLab\Application\SemartHris\Component\Tax\Service\ValidateTaxGroup;
 use KejawenLab\Application\SemartHris\Component\User\Model\UserInterface;
 use KejawenLab\Application\SemartHris\Util\StringUtil;
 use KejawenLab\Application\SemartHris\Validator\Constraint\UniqueContract;
@@ -59,7 +63,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *
  * @Vich\Uploadable()
  *
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class Employee implements Superviseable, Contractable, UserInterface, \Serializable
 {
@@ -339,6 +343,18 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
     private $haveOvertimeBenefit;
 
     /**
+     * @Groups({"read", "write"})
+     *
+     * @ORM\Column(type="string", length=3)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Choice(callback="getRiskRatioChoices")
+     *
+     * @var string
+     */
+    private $riskRatio;
+
+    /**
      * @Groups({"read"})
      *
      * @ORM\Column(type="string")
@@ -394,6 +410,7 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
     public function __construct()
     {
         $this->haveOvertimeBenefit = false;
+        $this->riskRatio = RiskRatio::RISK_VERY_LOW;
     }
 
     /**
@@ -785,15 +802,15 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
      */
     public function getTaxGroupText(): string
     {
-        return ValidateIndonesiaTaxType::convertToText($this->taxGroup);
+        return ValidateTaxGroup::convertToText($this->taxGroup);
     }
 
     /**
-     * @param string $taxGroup
+     * @param null|string $taxGroup
      */
-    public function setTaxGroup(string $taxGroup): void
+    public function setTaxGroup(?string $taxGroup): void
     {
-        if (!ValidateIndonesiaTaxType::isValidType($taxGroup)) {
+        if (!ValidateTaxGroup::isValidType((string) $taxGroup)) {
             throw new \InvalidArgumentException(sprintf('"%s" is not valid tax type.', $taxGroup));
         }
 
@@ -845,6 +862,31 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
     /**
      * @return string
      */
+    public function getRiskRatio(): string
+    {
+        return $this->riskRatio ?? RiskRatio::RISK_VERY_LOW;
+    }
+
+    public function getRiskRatioText(): string
+    {
+        return ValidateRiskRatio::convertToText($this->riskRatio);
+    }
+
+    /**
+     * @param null|string $riskRatio
+     */
+    public function setRiskRatio(?string $riskRatio): void
+    {
+        if (!ValidateRiskRatio::isValidType((string) $riskRatio)) {
+            throw new \InvalidArgumentException(sprintf('"%s" is not valid risk ratio.', $riskRatio));
+        }
+
+        $this->riskRatio = $riskRatio;
+    }
+
+    /**
+     * @return string
+     */
     public function getUsername(): string
     {
         return (string) $this->username;
@@ -879,7 +921,7 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
      */
     public function getRoles(): array
     {
-        return $this->roles ?? ['ROLE_USER'];
+        return $this->roles ?? [self::DEFAULT_ROLE];
     }
 
     /**
@@ -910,7 +952,7 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
      */
     public function isResign(): bool
     {
-        $now = new \DateTime();
+        $now = \DateTime::createFromFormat('Y-m-d 00:00:00', date('Y-m-d'));
         if (!$this->getResignDate()) {
             return false;
         }
@@ -969,7 +1011,15 @@ class Employee implements Superviseable, Contractable, UserInterface, \Serializa
      */
     public function getTaxGroupChoices(): array
     {
-        return ValidateIndonesiaTaxType::getTypes();
+        return ValidateTaxGroup::getTypes();
+    }
+
+    /**
+     * @return array
+     */
+    public function getRiskRatioChoices(): array
+    {
+        return ValidateRiskRatio::getTypes();
     }
 
     /**

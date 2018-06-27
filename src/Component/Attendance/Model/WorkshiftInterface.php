@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Attendance\Model;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface WorkshiftInterface
 {

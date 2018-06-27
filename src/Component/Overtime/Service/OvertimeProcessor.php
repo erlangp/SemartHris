@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Overtime\Service;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
@@ -7,7 +9,7 @@ use KejawenLab\Application\SemartHris\Component\Overtime\Repository\OvertimeRepo
 use KejawenLab\Application\SemartHris\Kernel;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class OvertimeProcessor
 {
@@ -90,7 +92,6 @@ class OvertimeProcessor
             return;
         }
 
-        //Triggering update
         $overtime->setDescription(sprintf('%s#%s', Kernel::SEMART_VERSION, $overtime->getDescription()));
         $this->overtimeRepository->update($overtime);
     }

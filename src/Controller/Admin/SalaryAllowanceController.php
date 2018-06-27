@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Controller\Admin;
 
 use Doctrine\ORM\QueryBuilder;
@@ -8,7 +10,7 @@ use KejawenLab\Application\SemartHris\Form\Manipulator\SalaryAllowanceManipulato
 use KejawenLab\Application\SemartHris\Repository\SalaryAllowanceRepository;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class SalaryAllowanceController extends AdminController
 {

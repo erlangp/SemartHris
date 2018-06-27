@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Address\Repository;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class AddressRepositoryFactory
 {
@@ -44,6 +46,6 @@ class AddressRepositoryFactory
      */
     private function addRepository(AddressRepositoryInterface $addressRepository): void
     {
-        $this->repositories[$addressRepository->getEntityClass()] = $addressRepository;
+        $this->repositories[$addressRepository->getAddressClass()] = $addressRepository;
     }
 }

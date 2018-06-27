@@ -1,13 +1,14 @@
 <?php
 
 namespace Tests\KejawenLab\Application\SemartHris\Component\Attendance\Service;
+
 use KejawenLab\Application\SemartHris\Component\Attendance\Model\AttendanceInterface;
 use KejawenLab\Application\SemartHris\Component\Attendance\Model\ShiftmentInterface;
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use KejawenLab\Application\SemartHris\Component\Reason\Model\ReasonInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class AttendanceStub implements AttendanceInterface
 {
@@ -150,9 +151,9 @@ class AttendanceStub implements AttendanceInterface
     }
 
     /**
-     * @param string $description
+     * @param null|string $description
      */
-    public function setDescription(string $description): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }

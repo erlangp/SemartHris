@@ -1,12 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris;
 
-use KejawenLab\Application\SemartHris\DependencyInjection\Compiler\AddressRepositoryFactoryPass;
-use KejawenLab\Application\SemartHris\DependencyInjection\Compiler\AttendanceRulePass;
-use KejawenLab\Application\SemartHris\DependencyInjection\Compiler\ContractableRepositoryFactoryPass;
-use KejawenLab\Application\SemartHris\DependencyInjection\Compiler\OvertimeCalculatorPass;
-use KejawenLab\Application\SemartHris\DependencyInjection\Compiler\PayrollProcessorPass;
+use KejawenLab\Application\SemartHris\DependencyInjection\Compiler\CompilerPassFactory;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -22,7 +20,7 @@ class Kernel extends BaseKernel implements CompilerPassInterface
 
     const SEMART_VERSION = '0.0.0-dev';
 
-    const SEMART_APP_CANONICAL = 'SemartHris';
+    const SEMART_CANONICAL = 'SemartHris';
 
     /**
      * @return string
@@ -53,6 +51,8 @@ class Kernel extends BaseKernel implements CompilerPassInterface
     /**
      * @param ContainerBuilder $container
      * @param LoaderInterface  $loader
+     *
+     * @throws
      */
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
@@ -62,13 +62,15 @@ class Kernel extends BaseKernel implements CompilerPassInterface
             $loader->load($confDir.'/packages/'.$this->environment.'/**/*'.self::CONFIG_EXTS, 'glob');
         }
         $loader->load($confDir.'/admin/*'.self::CONFIG_EXTS, 'glob');
-        $loader->load($confDir.'/semart/*'.self::CONFIG_EXTS, 'glob');
+        $loader->load($confDir.'/semarthris/*'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/services'.self::CONFIG_EXTS, 'glob');
         $loader->load($confDir.'/services_'.$this->environment.self::CONFIG_EXTS, 'glob');
     }
 
     /**
      * @param RouteCollectionBuilder $routes
+     *
+     * @throws
      */
     protected function configureRoutes(RouteCollectionBuilder $routes)
     {
@@ -87,10 +89,6 @@ class Kernel extends BaseKernel implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        (new AddressRepositoryFactoryPass())->process($container);
-        (new ContractableRepositoryFactoryPass())->process($container);
-        (new OvertimeCalculatorPass())->process($container);
-        (new AttendanceRulePass())->process($container);
-        (new PayrollProcessorPass())->process($container);
+        (new CompilerPassFactory($container))->compile();
     }
 }

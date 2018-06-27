@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Employee\Repository;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface EmployeeRepositoryInterface
 {
@@ -15,7 +17,7 @@ interface EmployeeRepositoryInterface
      *
      * @return EmployeeInterface
      */
-    public function find(string $id): ? EmployeeInterface;
+    public function find(?string $id): ? EmployeeInterface;
 
     /**
      * @param array $ids

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Attendance\Model;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use KejawenLab\Application\SemartHris\Component\Reason\Model\ReasonInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface AttendanceInterface
 {
@@ -51,9 +53,9 @@ interface AttendanceInterface
     public function getDescription(): ? string;
 
     /**
-     * @param string $description
+     * @param null|string $description
      */
-    public function setDescription(string $description): void;
+    public function setDescription(?string $description): void;
 
     /**
      * @return \DateTimeInterface|null

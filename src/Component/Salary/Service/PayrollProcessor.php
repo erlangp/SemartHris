@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Salary\Service;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Processor\InvalidPayrollPeriodException;
-use KejawenLab\Application\SemartHris\Component\Salary\Processor\ProcessorInterface;
+use KejawenLab\Application\SemartHris\Component\Salary\Processor\PayrollProcessorInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Repository\PayrollPeriodRepositoryInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class PayrollProcessor
 {
     /**
-     * @var ProcessorInterface
+     * @var PayrollProcessorInterface
      */
     private $payrollProcessor;
 
@@ -23,18 +25,20 @@ class PayrollProcessor
     private $payrollPeriodRepository;
 
     /**
-     * @param ProcessorInterface               $processor
+     * @param PayrollProcessorInterface        $processor
      * @param PayrollPeriodRepositoryInterface $repository
      */
-    public function __construct(ProcessorInterface $processor, PayrollPeriodRepositoryInterface $repository)
+    public function __construct(PayrollProcessorInterface $processor, PayrollPeriodRepositoryInterface $repository)
     {
         $this->payrollProcessor = $processor;
         $this->payrollPeriodRepository = $repository;
     }
 
     /**
-     * @param EmployeeInterface  $employee
+     * @param EmployeeInterface $employee
      * @param \DateTimeInterface $date
+     *
+     * @throws \Exception
      */
     public function process(EmployeeInterface $employee, \DateTimeInterface $date): void
     {
@@ -43,8 +47,10 @@ class PayrollProcessor
     }
 
     /**
-     * @param EmployeeInterface  $employee
+     * @param EmployeeInterface $employee
      * @param \DateTimeInterface $date
+     *
+     * @throws \Exception
      */
     private function validate(EmployeeInterface $employee, \DateTimeInterface $date): void
     {
@@ -53,7 +59,7 @@ class PayrollProcessor
         $prevPeriod->sub(new \DateInterval('P1M'));
 
         $prev = $this->payrollPeriodRepository->findByEmployeeAndDate($employee, $prevPeriod);
-        if (!$prev && !$this->payrollPeriodRepository->isEmpty()) {
+        if (!$prev && !$this->payrollPeriodRepository->isEmptyOrNotEqueal($date)) {
             throw new \InvalidArgumentException(sprintf('Previous period must be processed before processing it period.'));
         }
 

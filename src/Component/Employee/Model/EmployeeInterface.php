@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Employee\Model;
 
 use KejawenLab\Application\SemartHris\Component\Address\Model\Addressable;
@@ -11,12 +13,13 @@ use KejawenLab\Application\SemartHris\Component\Employee\ContractType;
 use KejawenLab\Application\SemartHris\Component\Employee\Gender;
 use KejawenLab\Application\SemartHris\Component\Employee\IdentityType;
 use KejawenLab\Application\SemartHris\Component\Employee\MaritalStatus;
+use KejawenLab\Application\SemartHris\Component\Employee\RiskRatio;
 use KejawenLab\Application\SemartHris\Component\Job\Model\JobLevelInterface;
 use KejawenLab\Application\SemartHris\Component\Job\Model\JobTitleInterface;
-use KejawenLab\Application\SemartHris\Component\Tax\IndonesianTaxType;
+use KejawenLab\Application\SemartHris\Component\Tax\TaxGroup;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface EmployeeInterface extends Addressable
 {
@@ -166,14 +169,35 @@ interface EmployeeInterface extends Addressable
     /**
      * @return string
      *
-     * @see IndonesianTaxType
+     * @see TaxGroup
      */
     public function getTaxGroup(): string;
+
+    /**
+     * @param null|string $taxGroup
+     *
+     * @see TaxGroup
+     */
+    public function setTaxGroup(?string $taxGroup): void;
 
     /**
      * @return bool
      */
     public function isHaveOvertimeBenefit(): bool;
+
+    /**
+     * @return string
+     *
+     * @see RiskRatio
+     */
+    public function getRiskRatio(): ? string;
+
+    /**
+     * @param null|string $riskRatio
+     *
+     * @see RiskRatio
+     */
+    public function setRiskRatio(?string $riskRatio): void;
 
     /**
      * @return bool

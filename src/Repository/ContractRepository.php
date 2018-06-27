@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Repository;
 
 use KejawenLab\Application\SemartHris\Component\Contract\Model\ContractInterface;
@@ -7,7 +9,7 @@ use KejawenLab\Application\SemartHris\Component\Contract\Repository\ContractRepo
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class ContractRepository extends Repository implements ContractRepositoryInterface
 {
@@ -16,9 +18,9 @@ class ContractRepository extends Repository implements ContractRepositoryInterfa
      *
      * @return ContractInterface|null
      */
-    public function find(string $id): ? ContractInterface
+    public function find(?string $id): ? ContractInterface
     {
-        return $this->entityManager->getRepository($this->entityClass)->find($id);
+        return $this->doFind($id);
     }
 
     /**
@@ -44,6 +46,10 @@ class ContractRepository extends Repository implements ContractRepositoryInterfa
      */
     public function findByType(string $type): array
     {
+        if (!$type) {
+            return [];
+        }
+
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('c.id, c.letterNumber, c.subject');
         $queryBuilder->from($this->entityClass, 'c');

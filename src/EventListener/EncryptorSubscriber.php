@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\EventListener;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -11,7 +13,7 @@ use KejawenLab\Application\SemartHris\Configuration\Encrypt;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class EncryptorSubscriber implements EventSubscriber
 {
@@ -101,9 +103,10 @@ class EncryptorSubscriber implements EventSubscriber
             if ($plain) {
                 $encrypted = $this->encryptor->$operation($plain, $this->propertyAccessor->getValue($entity, $this->encrypt->getKeyStore()));
                 $this->propertyAccessor->setValue($entity, $property, $encrypted);
-                $this->propertyAccessor->setValue($entity, $this->encrypt->getKeyStore(), $this->encryptor->getKey());
             }
         }
+
+        $this->propertyAccessor->setValue($entity, $this->encrypt->getKeyStore(), $this->encryptor->getKey());
     }
 
     /**

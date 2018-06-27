@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Repository;
 
 use Doctrine\ORM\QueryBuilder;
@@ -8,7 +10,7 @@ use KejawenLab\Application\SemartHris\Component\Attendance\Repository\WorkshiftR
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class WorkshiftRepository extends Repository implements WorkshiftRepositoryInterface
 {
@@ -55,7 +57,7 @@ class WorkshiftRepository extends Repository implements WorkshiftRepositoryInter
         $queryBuilder->from($this->entityClass, 'w');
         $queryBuilder->leftJoin('w.employee', 'e');
         $queryBuilder->andWhere($queryBuilder->expr()->gte('w.startDate', $queryBuilder->expr()->literal($startDate->format('Y-m-d'))));
-        $queryBuilder->andWhere($queryBuilder->expr()->lte('w.endDate', $queryBuilder->expr()->literal($endDate->format('Y-m-d'))));
+        $queryBuilder->andWhere($queryBuilder->expr()->lte('w.startDate', $queryBuilder->expr()->literal($endDate->format('Y-m-d'))));
 
         if ($companyId) {
             $queryBuilder->andWhere($queryBuilder->expr()->eq('e.company', $queryBuilder->expr()->literal($companyId)));

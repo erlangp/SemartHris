@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Controller\Admin;
 
 use EasyCorp\Bundle\EasyAdminBundle\Exception\NoEntitiesConfiguredException;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\UndefinedEntityException;
-use KejawenLab\Application\SemartHris\Component\Setting\Setting;
+use KejawenLab\Application\SemartHris\Component\Setting\Service\Setting;
 use KejawenLab\Application\SemartHris\Entity\Region;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class SettingController extends AdminController
 {
@@ -19,7 +21,7 @@ class SettingController extends AdminController
      */
     protected function listAction(): Response
     {
-        return $this->render('app/setting/list.html.twig', ['settings' => Setting::all()]);
+        return $this->render('app/setting/list.html.twig', ['settings' => $this->container->get(Setting::class)->all()]);
     }
 
     /**
@@ -34,7 +36,7 @@ class SettingController extends AdminController
             return $this->redirect($this->get('router')->generate('easyadmin', $queryParameters));
         }
 
-        return $this->render($this->entity['templates']['list'], ['settings' => Setting::all($this->request->query->get('query'))]);
+        return $this->render($this->entity['templates']['list'], ['settings' => $this->container->get(Setting::class)->all($this->request->query->get('query'))]);
     }
 
     /**
@@ -60,7 +62,7 @@ class SettingController extends AdminController
         if ($editForm->isSubmitted()) {
             $setting = $this->container->get(Setting::class);
             if ($value = $cheat->getId()) {
-                $setting->save($cheat->getName(), $value);
+                $setting->update($cheat->getName(), $value);
             }
 
             return $this->redirectToReferrer();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Component\Employee\Model;
 
 use KejawenLab\Application\SemartHris\Component\Address\Model\CityInterface;
@@ -8,7 +10,7 @@ use KejawenLab\Application\SemartHris\Component\Education\Model\EducationTitleIn
 use KejawenLab\Application\SemartHris\Component\Employee\FamilyRelation;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 interface EmployeeFamilyInterface
 {

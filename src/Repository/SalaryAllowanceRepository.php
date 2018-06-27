@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Repository;
 
 use Doctrine\ORM\QueryBuilder;
@@ -9,7 +11,7 @@ use KejawenLab\Application\SemartHris\Component\Salary\Repository\AllowanceRepos
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class SalaryAllowanceRepository extends Repository implements AllowanceRepositoryInterface
 {
@@ -66,7 +68,7 @@ class SalaryAllowanceRepository extends Repository implements AllowanceRepositor
         }
 
         if (null !== $sortField) {
-            $queryBuilder->orderBy('entity.'.$sortField, $sortDirection);
+            $queryBuilder->orderBy(sprintf('entity.%s', $sortField), $sortDirection);
         }
 
         return $queryBuilder;

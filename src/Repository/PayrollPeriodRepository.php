@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Repository;
 
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
@@ -7,7 +9,7 @@ use KejawenLab\Application\SemartHris\Component\Salary\Model\PayrollPeriodInterf
 use KejawenLab\Application\SemartHris\Component\Salary\Repository\PayrollPeriodRepositoryInterface;
 
 /**
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
 class PayrollPeriodRepository extends Repository implements PayrollPeriodRepositoryInterface
 {
@@ -36,8 +38,8 @@ class PayrollPeriodRepository extends Repository implements PayrollPeriodReposit
     {
         /** @var PayrollPeriodInterface $entity */
         $entity = new $this->entityClass();
-        $entity->setYear($date->format('Y'));
-        $entity->setMonth($date->format('n'));
+        $entity->setYear((int) $date->format('Y'));
+        $entity->setMonth((int) $date->format('n'));
         $entity->setCompany($employee->getCompany());
         $entity->setClosed(false);
 
@@ -71,13 +73,17 @@ class PayrollPeriodRepository extends Repository implements PayrollPeriodReposit
     }
 
     /**
+     * @param \DateTimeInterface $date
+     *
      * @return bool
      */
-    public function isEmpty(): bool
+    public function isEmptyOrNotEqueal(\DateTimeInterface $date): bool
     {
         $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->from($this->entityClass, 'p');
         $queryBuilder->select('COUNT(1)');
+        $queryBuilder->andWhere($queryBuilder->expr()->neq('p.year', $queryBuilder->expr()->literal($date->format('Y'))));
+        $queryBuilder->andWhere($queryBuilder->expr()->neq('p.month', $queryBuilder->expr()->literal($date->format('n'))));
 
         $result = $queryBuilder->getQuery()->getSingleScalarResult();
         if (0 === $result) {
@@ -85,5 +91,23 @@ class PayrollPeriodRepository extends Repository implements PayrollPeriodReposit
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasUnclosedPeriod(): bool
+    {
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->from($this->entityClass, 'p');
+        $queryBuilder->select('COUNT(1)');
+        $queryBuilder->andWhere($queryBuilder->expr()->eq('p.closed', $queryBuilder->expr()->literal(false)));
+
+        $result = $queryBuilder->getQuery()->getSingleScalarResult();
+        if (0 === $result) {
+            return false;
+        }
+
+        return true;
     }
 }

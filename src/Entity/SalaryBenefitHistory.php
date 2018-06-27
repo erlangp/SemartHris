@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KejawenLab\Application\SemartHris\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -8,10 +10,13 @@ use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use KejawenLab\Application\SemartHris\Component\Contract\Model\Contractable;
+use KejawenLab\Application\SemartHris\Component\Contract\Model\ContractInterface;
 use KejawenLab\Application\SemartHris\Component\Employee\Model\EmployeeInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Model\BenefitHistoryInterface;
 use KejawenLab\Application\SemartHris\Component\Salary\Model\ComponentInterface;
 use KejawenLab\Application\SemartHris\Configuration\Encrypt;
+use KejawenLab\Application\SemartHris\Validator\Constraint\UniqueContract;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -28,14 +33,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  *
  * @UniqueEntity({"employee", "component"})
+ * @UniqueEntity("contract", message="semarthris.contract.already_used")
+ * @UniqueContract()
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  *
- * @Encrypt(properties="benefitValue", keyStore="benefitKey")
+ * @Encrypt(properties={"newBenefitValue", "oldBenefitValue"}, keyStore="benefitKey")
  *
- * @author Muhamad Surya Iksanudin <surya.iksanudin@kejawenlab.com>
+ * @author Muhamad Surya Iksanudin <surya.iksanudin@gmail.com>
  */
-class SalaryBenefitHistory implements BenefitHistoryInterface
+class SalaryBenefitHistory implements BenefitHistoryInterface, Contractable
 {
     use BlameableEntity;
     use SoftDeleteableEntity;
@@ -77,6 +84,18 @@ class SalaryBenefitHistory implements BenefitHistoryInterface
     private $component;
 
     /**
+     * @Groups({"write", "read"})
+     *
+     * @ORM\ManyToOne(targetEntity="KejawenLab\Application\SemartHris\Entity\Contract", fetch="EAGER")
+     * @ORM\JoinColumn(name="contract_id", referencedColumnName="id")
+     *
+     * @Assert\NotBlank()
+     *
+     * @var ContractInterface
+     */
+    private $contract;
+
+    /**
      * @Groups({"read", "write"})
      *
      * @ORM\Column(type="text", nullable=true)
@@ -85,7 +104,23 @@ class SalaryBenefitHistory implements BenefitHistoryInterface
      *
      * @var string
      */
-    private $benefitValue;
+    private $newBenefitValue;
+
+    /**
+     * @Groups({"read"})
+     *
+     * @ORM\Column(type="text", nullable=true)
+     *
+     * @var string
+     */
+    private $oldBenefitValue;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $benefitKey;
 
     /**
      * @Groups({"read", "write"})
@@ -95,13 +130,6 @@ class SalaryBenefitHistory implements BenefitHistoryInterface
      * @var string
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @var string
-     */
-    private $benefitKey;
 
     /**
      * @return string
@@ -144,19 +172,67 @@ class SalaryBenefitHistory implements BenefitHistoryInterface
     }
 
     /**
-     * @return null|string
+     * @return ContractInterface|null
      */
-    public function getBenefitValue(): ? string
+    public function getContract(): ? ContractInterface
     {
-        return $this->benefitValue;
+        return $this->contract;
     }
 
     /**
-     * @param string|null $benefitValue
+     * @param ContractInterface|null $contract
      */
-    public function setBenefitValue(?string $benefitValue): void
+    public function setContract(?ContractInterface $contract): void
     {
-        $this->benefitValue = $benefitValue;
+        $this->contract = $contract;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getNewBenefitValue(): ? string
+    {
+        return $this->newBenefitValue;
+    }
+
+    /**
+     * @param null|string $newBenefitValue
+     */
+    public function setNewBenefitValue(?string $newBenefitValue): void
+    {
+        $this->newBenefitValue = $newBenefitValue;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getOldBenefitValue(): ? string
+    {
+        return $this->oldBenefitValue;
+    }
+
+    /**
+     * @param null|string $oldBenefitValue
+     */
+    public function setOldBenefitValue(?string $oldBenefitValue): void
+    {
+        $this->oldBenefitValue = $oldBenefitValue;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getBenefitKey(): ? string
+    {
+        return $this->benefitKey;
+    }
+
+    /**
+     * @param null|string $benefitKey
+     */
+    public function setBenefitKey(?string $benefitKey): void
+    {
+        $this->benefitKey = $benefitKey;
     }
 
     /**
@@ -173,21 +249,5 @@ class SalaryBenefitHistory implements BenefitHistoryInterface
     public function setDescription(?string $description): void
     {
         $this->description = $description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBenefitKey(): ? string
-    {
-        return $this->benefitKey;
-    }
-
-    /**
-     * @param string $benefitKey
-     */
-    public function setBenefitKey(?string $benefitKey): void
-    {
-        $this->benefitKey = $benefitKey;
     }
 }
